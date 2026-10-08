@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { sendTelegram } from '@/lib/telegram'
+import { getCurrentUser } from '@/lib/current-user'
 import {
   ACTIVE_ORDER_STATUSES,
   nextOrderStatus,
@@ -9,6 +10,8 @@ import {
 } from '@/lib/kds/helpers'
 
 export async function advanceOrderStatus(orderId: string) {
+  const actor = await getCurrentUser()
+  if (!actor || actor.role === 'cashier') return { success: false as const, error: 'Forbidden' }
   const supabase = await createClient()
 
   const { data: order, error } = await supabase

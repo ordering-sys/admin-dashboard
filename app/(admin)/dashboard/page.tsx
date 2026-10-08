@@ -1,7 +1,12 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/lib/current-user'
 import { QrCode, Utensils, ChefHat, BarChart3 } from 'lucide-react'
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const actor = await getCurrentUser()
+  if (!actor) redirect('/auth/login')
+  if (actor.role === 'chef') redirect('/kds')
   return (
     <div className="max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
@@ -15,22 +20,22 @@ export default function DashboardPage() {
           color="amber"
         />
 
-        <DashboardCard
+        {actor.role === 'admin' && <DashboardCard
           href="/menu"
           icon={<Utensils className="w-8 h-8" />}
           title="Menu Management"
           description="Add, edit, and manage menu items"
           color="green"
           disabled
-        />
+        />}
 
-        <DashboardCard
+        {actor.role === 'admin' && <DashboardCard
           href="/kds"
           icon={<ChefHat className="w-8 h-8" />}
           title="Kitchen Display"
           description="View and manage incoming orders"
           color="blue"
-        />
+        />}
 
         <DashboardCard
           href="/analytics"

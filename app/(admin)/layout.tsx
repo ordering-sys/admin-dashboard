@@ -1,11 +1,16 @@
 import Link from 'next/link'
-import { LayoutDashboard, Utensils, QrCode, ChefHat } from 'lucide-react'
+import { LayoutDashboard, Utensils, QrCode, ChefHat, Users } from 'lucide-react'
+import { LogoutButton } from '@/components/LogoutButton'
+import { getCurrentUser } from '@/lib/current-user'
+import { redirect } from 'next/navigation'
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const user = await getCurrentUser()
+  if (!user) redirect('/auth/login')
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navbar */}
@@ -13,10 +18,11 @@ export default function AdminLayout({
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Cafe Admin</h1>
-            <nav className="flex gap-4">
+            <nav className="flex gap-4 items-center">
               <Link href="/" className="text-sm hover:text-amber-200">
                 View Site
               </Link>
+              <LogoutButton />
             </nav>
           </div>
         </div>
@@ -26,18 +32,19 @@ export default function AdminLayout({
         {/* Sidebar */}
         <aside className="w-64 bg-white min-h-screen shadow-lg">
           <nav className="p-4 space-y-2">
-            <NavLink href="/dashboard" icon={<LayoutDashboard />}>
+            {user.role !== 'chef' && <NavLink href="/dashboard" icon={<LayoutDashboard />}>
               Dashboard
-            </NavLink>
-            <NavLink href="/tables" icon={<QrCode />}>
+            </NavLink>}
+            {user.role !== 'chef' && <NavLink href="/tables" icon={<QrCode />}>
               Tables & QR
-            </NavLink>
-            <NavLink href="/menu" icon={<Utensils />}>
+            </NavLink>}
+            {user.role === 'admin' && <NavLink href="/menu" icon={<Utensils />}>
               Menu Items
-            </NavLink>
-            <NavLink href="/kds" icon={<ChefHat />}>
+            </NavLink>}
+            {user.role !== 'cashier' && <NavLink href="/kds" icon={<ChefHat />}>
               Kitchen Display
-            </NavLink>
+            </NavLink>}
+            {user.role === 'admin' && <NavLink href="/users" icon={<Users />}>Users</NavLink>}
           </nav>
         </aside>
 

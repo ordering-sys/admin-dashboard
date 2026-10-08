@@ -1,11 +1,10 @@
-'use client'
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/lib/current-user'
+import KDSClient from './kds-client'
 
-import { useMemo } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { KitchenDisplay } from '@/components/KitchenDisplay'
-
-export default function KDSPage() {
-  const supabase = useMemo(() => createClient(), [])
-
-  return <KitchenDisplay supabase={supabase} variant="embedded" />
+export default async function KDSPage() {
+  const actor = await getCurrentUser()
+  if (!actor) redirect('/auth/login')
+  if (actor.role === 'cashier') redirect('/dashboard')
+  return <KDSClient />
 }
