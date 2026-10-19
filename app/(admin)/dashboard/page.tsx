@@ -1,127 +1,31 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/current-user'
-import { QrCode, Utensils, ChefHat, BarChart3 } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Coffee, QrCode, Utensils, ChefHat, Users, Sparkles } from 'lucide-react'
 
 export default async function DashboardPage() {
   const actor = await getCurrentUser()
   if (!actor) redirect('/auth/login')
   if (actor.role === 'chef') redirect('/kds')
-  return (
-    <div className="max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DashboardCard
-          href="/tables"
-          icon={<QrCode className="w-8 h-8" />}
-          title="Tables & QR Codes"
-          description="Generate QR codes for customer ordering"
-          color="amber"
-        />
-
-        {actor.role === 'admin' && <DashboardCard
-          href="/menu"
-          icon={<Utensils className="w-8 h-8" />}
-          title="Menu Management"
-          description="Add, edit, and manage menu items"
-          color="green"
-          disabled
-        />}
-
-        {actor.role === 'admin' && <DashboardCard
-          href="/kds"
-          icon={<ChefHat className="w-8 h-8" />}
-          title="Kitchen Display"
-          description="View and manage incoming orders"
-          color="blue"
-        />}
-
-        <DashboardCard
-          href="/analytics"
-          icon={<BarChart3 className="w-8 h-8" />}
-          title="Analytics"
-          description="View sales reports and insights"
-          color="purple"
-          disabled
-        />
-      </div>
-
-      {/* Quick Guide */}
-      <div className="mt-12 bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
-        <h2 className="text-xl font-bold text-amber-900 mb-4">🚀 Quick Start Guide</h2>
-        <ol className="space-y-3 text-gray-700">
-          <li className="flex gap-3">
-            <span className="font-bold text-amber-700">1.</span>
-            <span>
-              <strong>Create Tables:</strong> Go to Tables & QR Codes and add your restaurant tables
-            </span>
-          </li>
-          <li className="flex gap-3">
-            <span className="font-bold text-amber-700">2.</span>
-            <span>
-              <strong>Generate QR Codes:</strong> Click View QR to see and print QR codes
-            </span>
-          </li>
-          <li className="flex gap-3">
-            <span className="font-bold text-amber-700">3.</span>
-            <span>
-              <strong>Place QR Codes:</strong> Print and place QR codes on each table
-            </span>
-          </li>
-          <li className="flex gap-3">
-            <span className="font-bold text-amber-700">4.</span>
-            <span>
-              <strong>Customers Order:</strong> Guests scan QR codes to browse menu and order
-            </span>
-          </li>
-        </ol>
-      </div>
-    </div>
-  )
-}
-
-function DashboardCard({
-  href,
-  icon,
-  title,
-  description,
-  color,
-  disabled = false
-}: {
-  href: string
-  icon: React.ReactNode
-  title: string
-  description: string
-  color: 'amber' | 'green' | 'blue' | 'purple'
-  disabled?: boolean
-}) {
-  const colorClasses = {
-    amber: 'bg-amber-500 group-hover:bg-amber-600',
-    green: 'bg-green-500 group-hover:bg-green-600',
-    blue: 'bg-blue-500 group-hover:bg-blue-600',
-    purple: 'bg-purple-500 group-hover:bg-purple-600'
-  }
-
-  const Component = disabled ? 'div' : Link
-
-  return (
-    <Component
-      href={disabled ? '#' : href}
-      className={`group bg-white rounded-xl shadow-md p-6 transition-all ${
-        disabled 
-          ? 'opacity-50 cursor-not-allowed' 
-          : 'hover:shadow-xl cursor-pointer'
-      }`}
-    >
-      <div className={`${colorClasses[color]} text-white p-3 rounded-lg inline-block mb-4 transition-colors`}>
-        {icon}
-      </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">
-        {title}
-        {disabled && <span className="text-sm text-gray-500 ml-2">(Coming Soon)</span>}
-      </h3>
-      <p className="text-gray-600">{description}</p>
-    </Component>
-  )
+  const cards = [
+    { href: '/tables', icon: QrCode, title: 'Tables & QR codes', description: 'A seamless start to every visit. Create tables and prepare your ordering QR codes.', tag: 'GUEST EXPERIENCE', accent: 'amber' },
+    ...(actor.role === 'admin' ? [
+      { href: '/menu', icon: Utensils, title: 'Your menu, beautifully served', description: 'Update dishes, upload photos, and keep prices and availability fresh.', tag: 'MENU MANAGEMENT', accent: 'mint' },
+      { href: '/kds', icon: ChefHat, title: 'Inside the kitchen', description: 'Follow incoming orders from the first ticket to the final finishing touch.', tag: 'LIVE OPERATIONS', accent: 'blue' },
+      { href: '/users', icon: Users, title: 'The people behind it all', description: 'Create staff accounts and give every team member the access they need.', tag: 'YOUR TEAM', accent: 'amber' },
+    ] : []),
+  ]
+  return <div className="admin-overview">
+    <section className="admin-hero">
+      <div className="admin-hero-copy"><span className="admin-eyebrow"><Sparkles size={14} /> YOUR DAILY BREW OF BUSINESS</span><h1>A good day starts<br />with a great café.</h1><p>Welcome to your workspace. A little attention to the details makes every guest experience better.</p><Link href={actor.role === 'admin' ? '/menu' : '/tables'} className="admin-primary">{actor.role === 'admin' ? 'Manage your menu' : 'Manage your tables'}<ArrowRight size={17} /></Link></div>
+      <div className="admin-hero-art" aria-hidden="true"><span className="admin-orbit admin-orbit-one" /><span className="admin-orbit admin-orbit-two" /><div className="admin-coffee-emblem"><Coffee strokeWidth={1} /></div><span className="admin-art-caption">CRAFTED WITH CARE · SERVED WITH LOVE</span></div>
+    </section>
+    <div className="admin-section-heading"><div><span className="admin-eyebrow">THE EVERYDAY ESSENTIALS</span><h2>Everything in its place.</h2></div><span className="admin-section-note">Your café, at a glance</span></div>
+    <div className="admin-action-grid">{cards.map(({ href, icon: Icon, title, description, tag, accent }) => <Link href={href} key={href} className={`admin-action-card accent-${accent}`}><div className="flex items-start justify-between"><span className="admin-action-icon"><Icon size={23} /></span><ArrowUpRight size={19} className="admin-card-arrow" /></div><span className="admin-card-tag">{tag}</span><h3>{title}</h3><p>{description}</p><span className="admin-card-cta">Open workspace <ArrowRight size={15} /></span></Link>)}</div>
+    <section className="admin-getting-started"><div><span className="admin-eyebrow">FROM SETUP TO FIRST SIP</span><h2>Ready for your next guest?</h2><p>A few simple steps to bring your café online.</p></div><ol>{[
+      ['Prepare your tables', 'Add a table and generate its unique QR code.'],
+      ['Set the scene', 'Print and place a QR code where guests can scan it.'],
+      ['Let the good times flow', 'Guests browse the menu; your team takes it from there.'],
+    ].map(([title, text], index) => <li key={title}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol></section>
+  </div>
 }

@@ -14,7 +14,7 @@ export default async function UsersPage() {
     .order('created_at', { ascending: false })
 
   return <div className="max-w-4xl space-y-8">
-    <h1 className="text-3xl font-bold text-gray-900">Users</h1>
+    <div><span className="admin-eyebrow">THE PEOPLE BEHIND EVERY CUP</span><h1 className="text-3xl font-bold text-gray-900 mt-2">Team members</h1><p className="text-gray-600 mt-2">Manage your team and their access to the café workspace.</p></div>
     <CreateUserForm />
     <section className="rounded-xl bg-white p-6 shadow">
       <h2 className="mb-4 text-xl font-semibold">Team members</h2>

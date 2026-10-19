@@ -110,7 +110,8 @@ export default function TablesClient() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tables & QR Codes</h1>
+          <span className="admin-eyebrow">A WARM WELCOME STARTS HERE</span>
+          <h1 className="text-3xl font-bold text-gray-900 mt-2">Tables & QR Codes</h1>
           <p className="text-gray-600 mt-2">Manage tables and generate QR codes</p>
         </div>
         <button

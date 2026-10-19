@@ -1,19 +1,20 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/current-user'
+import { createAdminClient } from '@/lib/supabase/admin'
+import type { MenuItem } from '@/lib/types'
+import MenuClient from './menu-client'
 
 export default async function MenuPage() {
   const actor = await getCurrentUser()
   if (!actor) redirect('/auth/login')
   if (actor.role !== 'admin') redirect('/dashboard')
-  return (
-    <div className="max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">Menu Management</h1>
-      <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 text-center">
-        <p className="text-xl text-blue-900 mb-2">🚧 Coming Soon</p>
-        <p className="text-gray-600">
-          Menu CRUD operations will be implemented in Phase 2
-        </p>
-      </div>
-    </div>
-  )
+  const { data, error } = await createAdminClient()
+    .from('menu_items')
+    .select('id, name_en, name_km, description, price, category, image_url, available')
+    .order('name_en')
+  if (error) {
+    console.error('Menu load failed:', error)
+    return <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-800">Could not load menu items. Please refresh to try again.</div>
+  }
+  return <MenuClient items={(data ?? []) as MenuItem[]} />
 }

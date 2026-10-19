@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getSession } from 'next-auth/react';
+import { Coffee } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function LoginPage() {
         router.push(session?.user?.role === 'chef' ? '/kds' : '/dashboard');
         router.refresh();
       }
-    } catch (error) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -39,14 +40,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+    <div className="admin-workspace admin-auth" data-theme="dark">
+      <div className="admin-auth-card bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-amber-900">Admin Login</h1>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+          <span className="admin-auth-logo"><Coffee size={30} /></span>
+          <span className="admin-eyebrow">THE BEAN HAVEN · STAFF WORKSPACE</span>
+          <h1 className="admin-auth-title">Welcome back.</h1>
+          <p className="text-gray-600 mt-2">A fresh start for another good day.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="admin-auth-form space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
               {error}
@@ -60,6 +63,7 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -75,6 +79,7 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

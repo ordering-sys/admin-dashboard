@@ -7,6 +7,8 @@ export function LogoutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/auth/login" })}
+      aria-label="Log out"
+      title="Log out"
       className="flex items-center gap-2 text-sm hover:text-amber-200 transition-colors"
     >
       <LogOut size={16} />

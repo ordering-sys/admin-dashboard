@@ -244,11 +244,14 @@ CREATE TABLE tables (
 
 ## Next Steps
 
-### Phase 2A: Menu Management
-- Add/edit menu items
-- Upload images to R2
-- Set prices and categories
-- Toggle availability
+### Menu Management (available)
+- Sign in as an admin and open **Menu Items** in the sidebar.
+- Use **Add menu item** to enter English and Khmer names, a price in USD, and a category. Description and an HTTP/HTTPS image URL are optional.
+- Choose an existing category or type a new one, then click **Save item**.
+- Search by either name and filter by category or availability.
+- Click **Edit** to change an item, or click its availability badge to show or hide it from ordering.
+- **Delete** asks for confirmation and permanently removes the item. Mark an item unavailable instead when you want to keep it for later.
+- All changes use the existing Supabase `menu_items` table and require the admin role. Upload JPEG, PNG, or WebP images up to 3 MB, or use a hosted image URL. See [R2 setup](R2-SETUP.md) to configure Cloudflare storage.
 
 ### Phase 2B: Kitchen Display System
 - Real-time order queue
